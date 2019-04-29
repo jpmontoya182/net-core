@@ -17,6 +17,51 @@ namespace CoreEscuela {
             CargarEvaluaciones ();
         }
 
+        public List<ObjectoEscuelaBase> getObjetosEscuela () {
+            var listaObj = new List<ObjectoEscuelaBase> ();
+            listaObj.Add (Escuela);
+            listaObj.AddRange (Escuela.Cursos);
+            foreach (var curso in Escuela.Cursos) {
+                listaObj.AddRange (curso.Asignatura);
+                listaObj.AddRange (curso.Alumnos);
+                foreach (var alumno in curso.Alumnos) {
+                    listaObj.AddRange (alumno.Evaluaciones);
+                }
+            }
+            return listaObj;
+        }
+
+        public List<ObjectoEscuelaBase> getObjetosEscuela (bool incluirEvaluaciones) {
+            var listaObj = new List<ObjectoEscuelaBase> ();
+            listaObj.Add (Escuela);
+            listaObj.AddRange (Escuela.Cursos);
+            foreach (var curso in Escuela.Cursos) {
+                listaObj.AddRange (curso.Asignatura);
+                listaObj.AddRange (curso.Alumnos);
+                if (incluirEvaluaciones) {
+                    foreach (var alumno in curso.Alumnos) {
+                        listaObj.AddRange (alumno.Evaluaciones);
+                    }
+                }
+
+            }
+            return listaObj;
+        }
+
+        private List<Alumno> GenerarAlumnos (int cantidad) {
+            string[] nombre1 = { "Juan", "Ana", "Camilo", "Diana" };
+            string[] nombre2 = { "Maria", "Pablo", "Soraida", "Andres" };
+            string[] apellido1 = { "Montoya", "Cardona", "Ruiz", "Florez" };
+
+            var listaAlumnos = from n1 in nombre1
+            from n2 in nombre2
+            from a1 in apellido1
+            select new Alumno { Nombre = $"{n1} {n2} {a1}" };
+
+            return listaAlumnos.OrderBy ((al) => al.UniqueId).Take (cantidad).ToList ();
+        }
+
+        #region Metodos de Cargas
         private void CargarEvaluaciones () {
             foreach (var curso in Escuela.Cursos) {
                 foreach (var asignatura in curso.Asignatura) {
@@ -63,22 +108,11 @@ namespace CoreEscuela {
                 int cantRandom = rnd.Next (5, 20);
                 curso.Alumnos = GenerarAlumnos (cantRandom);
             }
-
         }
 
-        private List<Alumno> GenerarAlumnos (int cantidad) {
-            string[] nombre1 = { "Juan", "Ana", "Camilo", "Diana" };
-            string[] nombre2 = { "Maria", "Pablo", "Soraida", "Andres" };
-            string[] apellido1 = { "Montoya", "Cardona", "Ruiz", "Florez" };
+        #endregion
 
-            var listaAlumnos = from n1 in nombre1
-            from n2 in nombre2
-            from a1 in apellido1
-            select new Alumno { Nombre = $"{n1} {n2} {a1}" };
-
-            return listaAlumnos.OrderBy ((al) => al.UniqueId).Take (cantidad).ToList ();
-        }
-
+        #region Comentarios  
         /*
             private static bool Predicado (Curso obj) {
                 return obj.Nombre == "301";
@@ -91,6 +125,7 @@ namespace CoreEscuela {
             //  expression lambda y delegados 
             escuela.Cursos.RemoveAll ((cur) => cur.Nombre == "501" && cur.Jornada == TiposJornada.Tarde);
             */
+        #endregion
 
     }
 }

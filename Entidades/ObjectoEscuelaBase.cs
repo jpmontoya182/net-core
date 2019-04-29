@@ -7,5 +7,9 @@ namespace CoreEscuela.Entidades {
         public string Nombre { get; set; }
         public ObjectoEscuelaBase () => UniqueId = Guid.NewGuid ().ToString ();
 
+        public override string ToString () {
+            return $"{Nombre}, {UniqueId}";
+        }
+
     }
 }
