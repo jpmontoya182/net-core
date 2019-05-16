@@ -17,30 +17,43 @@ namespace CoreEscuela {
             CargarEvaluaciones ();
         }
 
-        public List<ObjectoEscuelaBase> getObjetosEscuela () {
+        public List<ObjectoEscuelaBase> getObjetosEscuela (
+            out int conteoEvaluaciones,
+            out int conteoAlumnos,
+            out int conteoAsignaturas,
+            out int conteoCursos,
+            bool incluirEvaluaciones = true,
+            bool incluirAlumnos = true,
+            bool incluirAsignaturas = true,
+            bool incluirCursos = true
+        ) {
             var listaObj = new List<ObjectoEscuelaBase> ();
-            listaObj.Add (Escuela);
-            listaObj.AddRange (Escuela.Cursos);
-            foreach (var curso in Escuela.Cursos) {
-                listaObj.AddRange (curso.Asignatura);
-                listaObj.AddRange (curso.Alumnos);
-                foreach (var alumno in curso.Alumnos) {
-                    listaObj.AddRange (alumno.Evaluaciones);
-                }
-            }
-            return listaObj;
-        }
+            conteoEvaluaciones = 0;
+            conteoAlumnos = 0;
+            conteoAsignaturas = 0;
+            conteoCursos = 0;
 
-        public List<ObjectoEscuelaBase> getObjetosEscuela (bool incluirEvaluaciones) {
-            var listaObj = new List<ObjectoEscuelaBase> ();
             listaObj.Add (Escuela);
-            listaObj.AddRange (Escuela.Cursos);
+            if (incluirCursos) {
+                listaObj.AddRange (Escuela.Cursos);
+                conteoCursos += Escuela.Cursos.Count;
+            }
             foreach (var curso in Escuela.Cursos) {
-                listaObj.AddRange (curso.Asignatura);
-                listaObj.AddRange (curso.Alumnos);
+
+                if (incluirAsignaturas) {
+                    listaObj.AddRange (curso.Asignatura);
+                    conteoAsignaturas += curso.Asignatura.Count;
+                }
+
+                if (incluirAlumnos) {
+                    listaObj.AddRange (curso.Alumnos);
+                    conteoAlumnos +=  curso.Alumnos.Count;
+                }
+
                 if (incluirEvaluaciones) {
                     foreach (var alumno in curso.Alumnos) {
                         listaObj.AddRange (alumno.Evaluaciones);
+                        conteoEvaluaciones += alumno.Evaluaciones.Count;
                     }
                 }
 

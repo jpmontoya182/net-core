@@ -13,9 +13,9 @@ namespace CoreEscuela {
             Printer.DibujarLinea (20);
             WriteLine ($"Nombre : {engine.Escuela.Nombre}, Año de Creacion: {engine.Escuela.AñoCreacion} , Ciudad: {engine.Escuela.Ciudad} , Pais: {engine.Escuela.Pais}");
             ImprimirCursos (engine.Escuela);
-            var listaObjetos = engine.getObjetosEscuela ();
+            var listaObjetos = engine.getObjetosEscuela (true, true, true, true);
 
-            var listILugar = from obj in listaObjetos
+            var listILugar = from obj in listaObjetos.Item1
             where obj is ILugar
             select obj;
 
